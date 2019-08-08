@@ -1,57 +1,72 @@
 //
-// This code snippet reads data from the serial port (user inputs) 
-// and parses the formatted data so it can be used by other functions
+// Arduino Serial Shell
+// By Daniel Brooke Peig (www.danbp.org)
+//
+// This code snippet reads data from the serial port (user inputs)
+// and parses the formatted data so it can be used by other functions.
+// You can consider this a mini shell for the serial terminal.
 //
 // Command syntax:
 // <commandname><separator><VariableId><separator><Value>
-//
-// Example: Set small circle (id=2) diameter equal to 12.3
-// > setdia 2 12.3
 //
 //---------------------------------------
 // Main Class
 //---------------------------------------
 //
-class serialCommandReader {
+class serialCommandReader
+{
 
 private:
-const char SEPARATOR = ' '; //Separator character
+    const char SEPARATOR = ' '; //Separator character
 
 public:
+    String command; //Command Variable
+    int var;        //Variable ID
+    float val;      //Variable value
 
-String inputCommand; //Command Variable
-int inputCommandVar; //Variable ID
-float inputCommandVal; //Variable value
+    //Default constructor
+    serialCommandReader()
+    {
+        command = "";
+        var = 0;
+        val = 0;
+    };
 
-//Default constructor
-serialCommandReader (){
-    inputCommand = "null";
-    inputCommandVar = -1;
-    inputCommandVal = -1;
-};
+    //Read the serial port data
+    String read()
+    {
+        if (Serial.available() > 0)
+        {
+            return Serial.readStringUntil('\n'); //Read the input String
+        }
+        return "";
+    };
 
-//Perform the reading
-bool read(){
-    String inputReading;
-    int break1;
-    int break2;
-    int break3;
-    if (Serial.available() > 0){
-        inputReading = Serial.readStringUntil('\n'); //Read the input String
-        break1 = inputReading.indexOf(SEPARATOR);
-        break2 = inputReading.indexOf(SEPARATOR, break1+1);
-        break3 = inputReading.indexOf('\n');
-        inputCommand = inputReading.substring(0, break1);
-        inputCommandVar = inputReading.substring(break1+1, break2).toInt();
-        inputCommandVal = inputReading.substring(break2+1,break3-1).toFloat();
-        return true;
+    //Process the data
+    bool process(String inputReading)
+    {
+        int break1 = inputReading.indexOf(SEPARATOR);
+        int break2 = inputReading.indexOf(SEPARATOR, break1 + 1);
+        int break3 = inputReading.indexOf('\n');
+        command = inputReading.substring(0, break1);
+        var = inputReading.substring(break1 + 1, break2).toInt();
+        val = inputReading.substring(break2 + 1, break3 - 1).toFloat();
+        if (command.length() > 0)
+            return true;
+        return false;
     }
-    return false;
-};
 
-bool clear(){
-    serialCommandReader();
-}
+    //Does everything
+    bool update()
+    {
+        return process(read());
+    }
+
+    //Clear the stored variables
+    bool clear()
+    {
+        serialCommandReader();
+    }
 
 }; //End of the class declaration
 
@@ -59,21 +74,63 @@ bool clear(){
 // Test Sketch
 //---------------------------------------
 
-serialCommandReader serialInput;
+serialCommandReader serialInput; //creates the class
+float var1, var2 = 0;
 
-void setup(){
-        Serial.begin(115200); // open the serial port at 115200 bp
-		Serial.println("Try <command> <variable> <value>");
+void setup()
+{
+    Serial.begin(115200);                                                    // open the serial port at 115200 bp
+    Serial.println("This Arduino is now a mini calculator!");                      //brief introduction
+    Serial.println("Syntax <command> <variable_index> <value>");                      //brief introduction
+    Serial.println("Commands: setvar, sum, substract, multiply and divide"); //brief introduction
+    Serial.println("Available variables: 1 and 2");                                    //brief introduction
+    Serial.println();
 };
 
-void loop(){
-    if(serialInput.read()){
-        Serial.print("Command:");
-        Serial.println(serialInput.inputCommand);
-        Serial.print("Variable:");
-        Serial.println(serialInput.inputCommandVar);
-        Serial.print("Value:");
-        Serial.println(serialInput.inputCommandVal);
-        serialInput.clear();
+void loop()
+{
+    //Ouput the user command
+    if (serialInput.update())
+    {
+        Serial.print("Command: ");
+        Serial.print(serialInput.command);
+        Serial.print("; Variable: ");
+        Serial.print(serialInput.var);
+        Serial.print("; Value: ");
+        Serial.println(serialInput.val);
+
+        //Perform actions based on the commands received
+        if (serialInput.command == "setvar" && serialInput.var == 1)
+        {
+            var1 = serialInput.val;
+        }
+        else if (serialInput.command == "setvar" && serialInput.var == 2)
+        {
+            var2 = serialInput.val;
+        }
+        else if (serialInput.command == "sum")
+        {
+            Serial.print("Result: ");
+            Serial.println(var1 + var2);
+        }
+        else if (serialInput.command == "subtract")
+        {
+            Serial.print("Result: ");
+            Serial.println(var1 - var2);
+        }
+        else if (serialInput.command == "multiply")
+        {
+            Serial.print("Result: ");
+            Serial.println(var1 * var2);
+        }
+        else if (serialInput.command == "divide")
+        {
+            Serial.println("Result: ");
+            Serial.println(var1 / var2);
+        }
+        else
+        {
+            Serial.println("Invalid command");
+        }
     }
 };
