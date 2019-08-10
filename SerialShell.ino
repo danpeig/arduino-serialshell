@@ -45,12 +45,16 @@ public:
     //Process the data
     bool process(String inputReading)
     {
+        command = "";
+        val = var = 0;
         int break1 = inputReading.indexOf(SEPARATOR);
+        if(break1 == -1) break1 = inputReading.length()-1;
         int break2 = inputReading.indexOf(SEPARATOR, break1 + 1);
-        int break3 = inputReading.indexOf('\n');
+        if(break2 == -1) break2 = inputReading.length()-1;
+        int break3 = inputReading.length()-1;
         command = inputReading.substring(0, break1);
-        var = inputReading.substring(break1 + 1, break2).toInt();
-        val = inputReading.substring(break2 + 1, break3 - 1).toFloat();
+        if(break2 != break1) var = inputReading.substring(break1 + 1, break2).toInt();
+        if(break2 != break3) val = inputReading.substring(break2 + 1, break3).toFloat();
         if (command.length() > 0)
             return true;
         return false;
