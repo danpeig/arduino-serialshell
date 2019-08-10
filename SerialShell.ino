@@ -88,6 +88,7 @@ void setup()
     Serial.println("Syntax <command> <variable_index> <value>");                      //brief introduction
     Serial.println("Commands: setvar, sum, substract, multiply and divide"); //brief introduction
     Serial.println("Available variables: 1 and 2");                                    //brief introduction
+    Serial.println("Serial baud rate: 115200, new line: NL & CR");                                    //brief introduction
     Serial.println();
 };
 
