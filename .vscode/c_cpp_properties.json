@@ -9,7 +9,6 @@
                 "C:\\Users\\Daniel\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\**"
             ],
             "forcedInclude": [
-                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h",
                 "C:\\Users\\Daniel\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.6.23\\cores\\arduino\\Arduino.h"
             ],
             "intelliSenseMode": "msvc-x64"

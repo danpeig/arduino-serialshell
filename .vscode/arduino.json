@@ -1,4 +1,7 @@
 {
-    "board": "arduino:avr:uno",
-    "sketch": "SerialShell.ino"
+    "board": "arduino:avr:mega",
+    "sketch": "SerialShell.ino",
+    "port": "COM3",
+    "programmer": "AVRISP mkII",
+    "configuration": "cpu=atmega2560"
 }
