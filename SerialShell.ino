@@ -1,6 +1,6 @@
 //
 // Arduino Serial Shell
-// By Daniel Brooke Peig (www.danbp.org)
+// By Daniel BP (www.danbp.org)
 //
 // This code snippet reads data from the serial port (user inputs)
 // and parses the formatted data so it can be used by other functions.
